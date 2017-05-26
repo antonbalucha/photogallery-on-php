@@ -1,0 +1,27 @@
+.discussion {
+	position: relative;
+	border:	1px solid #000000;
+	height:	100%;
+	width:	250px;
+}
+
+.my-gallery {
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: white;
+}
+.my-gallery figure {
+	float: left;
+	width: auto;
+	height: 200px;
+	margin: 5px;
+	background-color: white;
+}
+.my-gallery img {
+  width: auto;
+  height: 200px;
+}
+.my-gallery figcaption {
+  display: none;
+}
