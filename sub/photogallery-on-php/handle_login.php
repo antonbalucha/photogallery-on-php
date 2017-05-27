@@ -1,11 +1,11 @@
 <?php
-
-	$sub_path_to_php = "/sub/" . $photogallery_name;
-	$sub_path_to_files = "/files/" . $photogallery_name;
+	$sub_path_to_php = "/sub/";
+	$sub_path_to_files = "/files/";
+	$file_with_password = "password.txt";
 	
 	$full_path_to_php = realpath(dirname(__FILE__));
 	$full_path_to_files = str_replace($sub_path_to_php, $sub_path_to_files, $full_path_to_php);
-	$full_path_to_password = $full_path_to_files . "/password.txt";
+	$full_path_to_password = $full_path_to_files . "/" . $file_with_password;
 	
 	$myfile = fopen($full_path_to_password, "r") or die("Unable to verify password!");
 	
@@ -31,7 +31,6 @@
 		} else {
 			header("Location: ./unauthorized.php");
 		}
-		
 	} else {
 		header("Location: ./unauthorized.php");
 	}

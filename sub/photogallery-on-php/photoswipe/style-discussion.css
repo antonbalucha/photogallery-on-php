@@ -1,0 +1,36 @@
+.container {
+	position: relative;
+	font-family: Calibri, sans-serif, serif;
+}
+
+section {
+	padding-left: 10px;
+	border: 0px solid #CCC;
+	height: 100%;
+	margin-bottom: 10px;
+}
+
+#name {
+	width: 300px;
+}
+
+#commentary {
+	width: 298px;
+}
+
+.commentary_time {
+	font-family: Calibri, sans-serif, serif;
+	font-size: 9px;
+}
+
+.commentary_name {
+	font-family: Calibri, sans-serif, serif;
+	font-weight: bold;
+	margin-top: 10px;
+}
+
+.commentary_post {
+	font-family: Calibri, sans-serif, serif;
+	margin-right: 10px;
+	margin-left: 10px;
+}
