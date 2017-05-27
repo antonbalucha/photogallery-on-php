@@ -125,7 +125,7 @@
 							
 							echo "<tr>";
 							
-								$parts = explode(";;;", $line);
+								$parts = explode(";", $line);
 								
 								echo "<td>";
 									$parts[1] = str_replace("\"", "", $parts[1]);
