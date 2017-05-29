@@ -49,7 +49,7 @@
 
 	<body>		
 		<div class="login_widget">
-			<form action="handle_login.php" method="post">
+			<form action="handler_login.php" method="post">
 				<table>
 					<tr>
 						<td>

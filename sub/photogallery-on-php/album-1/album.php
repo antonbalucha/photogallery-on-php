@@ -11,6 +11,7 @@
 		// identify real path on server to the used files
 		$full_path_to_php = realpath(dirname(__FILE__));
 		$full_path_to_files = str_replace($sub_path_to_php, $sub_path_to_files, $full_path_to_php);
+		$album_folder = basename($full_path_to_files);
 		$full_path_to_discussion_txt = $full_path_to_files . "/" . $file_with_discussion;
 		$full_path_to_info_album_ini = $full_path_to_files . "/" . $file_with_info_album;
 		$full_path_to_info_photos_csv = $full_path_to_files . "/" . $file_with_info_photos;
@@ -27,6 +28,7 @@
 		<meta charset="UTF-8">
 		
 		<title><?php echo $info_album_ini_content["album_name"] ?></title>
+		
 		<link rel="stylesheet prefetch" href="../photoswipe/4.1.1/photoswipe.min.css"></link>
 		<link rel="stylesheet prefetch" href="../photoswipe/4.1.1/default-skin/default-skin.min.css"></link>
 		<link rel="stylesheet" href="../photoswipe/style.css"></link>
@@ -34,19 +36,28 @@
 	</head>
 
 	<body>
+	
+		<div class="container">
+			<a href="../galleries.php" alt="Back" title="Back">Back</a>
+			<a href="../handler_logout.php" alt="Logout" title="Logout">Logout</a>
+		</div>
+
 		<div class="container">
 			<h1><?php echo $info_album_ini_content["album_name"] ?></h1>
-			<p><?php echo $info_album_ini_content["album_description"] ?></p>		
+			<p><?php echo $info_album_ini_content["album_description"] ?></p>
 		</div>
 	
 		<div class="container">
-
 			<section>
 				<div class="my-gallery" itemscope itemtype="photoalbum">
 					<?php
 						if (($handle = fopen($full_path_to_info_photos_csv, "r")) !== FALSE) {
 							while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
-								print_figure($data[0], $data[1], $data[2], $data[3]);
+								$photo_name = $data[0];
+								$photo_size = $data[1];
+								$alt = $data[2];
+								$description = $data[3];
+								print_figure($album_folder, $photo_name, $photo_size, $alt, $description);
 							}
 							fclose($handle);
 						}
@@ -57,7 +68,7 @@
 			<!-- This <section> tag is part of discussion form in PHP -->
 			<section>
 			
-				<form action="discussion.php" method="post">
+				<form action="../handler_discussion.php?album_name=<?php echo $album_folder ?>" method="post">
 					<table>
 						<tr>
 							<td>
@@ -207,10 +218,10 @@
 		return $data;
 	}
 	
-	function print_figure($photo_name, $photo_size, $alt, $description) {
+	function print_figure($album_name, $photo_name, $photo_size, $alt, $description) {
 		echo "<figure itemprop=\"associatedMedia\" itemscope itemtype=\"photoalbum\">";
-		echo "<a href=\"./photo.php?photo_name=$photo_name&photo_type=photo\" itemprop=\"contentUrl\" data-size=\"$photo_size\">";
-		echo "<img src=\"./photo.php?photo_name=$photo_name&photo_type=thumb\" itemprop=\"thumbnail\" alt=\"$alt\" />";
+		echo "<a href=\"../handler_photo.php?album_name=$album_name&photo_name=$photo_name&photo_type=photo\" itemprop=\"contentUrl\" data-size=\"$photo_size\">";
+		echo "<img src=\"../handler_photo.php?album_name=$album_name&photo_name=$photo_name&photo_type=thumb\" itemprop=\"thumbnail\" alt=\"$alt\" title=\"$description\" />";
 		echo "</a>";
 		echo "<figcaption itemprop=\"caption description\">$description</figcaption>";
 		echo "</figure>";

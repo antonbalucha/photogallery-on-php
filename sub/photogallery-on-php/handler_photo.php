@@ -12,20 +12,24 @@
 			$full_path_to_php = realpath(dirname(__FILE__));
 			$full_path_to_files = str_replace($sub_path_to_php, $sub_path_to_files, $full_path_to_php);
 			
+			// clean album name
+			$album_name = clean_xss($_GET["album_name"]);
+			$album_name = clean_basename($album_name);
+			
 			// clean photo type
 			$photo_type = clean_xss($_GET["photo_type"]);
-			$photo_type = basename($photo_type);
+			$photo_type = clean_basename($photo_type);
 			
 			// clean photo name
 			$photo_name = clean_xss($_GET["photo_name"]);
-			$photo_name = basename($photo_name);
+			$photo_name = clean_basename($photo_name);
 			
 			if ($photo_type == "thumb" || $photo_type == "photo") {
 				
-				if ($photo_name != "") {
+				if ($album_name != "" && $photo_name != "") {
 			
 					// identify real path on server to the photo
-					$full_path_to_photo = $full_path_to_files . "/" . $photo_type . "/" . $photo_name;
+					$full_path_to_photo = $full_path_to_files . "/" . $album_name . "/" . $photo_type . "/" . $photo_name;
 				
 					// get the file's mime type to send the correct content type header
 					$finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -59,6 +63,13 @@
 		$data = trim($data);
 		$data = stripslashes($data);
 		$data = htmlspecialchars($data);
+		return $data;
+	}
+	
+	function clean_basename($data) {
+		$data = basename($data);
+		$data = str_replace("\.", "", $data);
+		$data = str_replace("\\", "", $data);
 		return $data;
 	}
 	
