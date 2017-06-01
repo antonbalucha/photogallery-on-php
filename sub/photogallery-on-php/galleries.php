@@ -98,7 +98,7 @@
 			<!-- This <section> tag is part of discussion form in PHP -->
 			<section>
 			
-				<form action="../handler_discussion.php?album_directory=<?php echo $album_directory ?>" method="post">
+				<form action="../handler_discussion.php" method="post">
 					<table>
 						<tr>
 							<td>
