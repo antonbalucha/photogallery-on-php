@@ -7,14 +7,16 @@
 		$sub_path_to_php = "/sub/";
 		$sub_path_to_files = "/files/";
 		$file_with_discussion = "discussion.txt";
+		$file_with_info_photos = "info_photos.csv";
 		$file_with_info_gallery = "info_gallery.ini";
-
+		$file_with_info_album = "info_album.ini";
+		
 		// identify real path on server to the used files
 		$full_path_to_php = realpath(dirname(__FILE__));
 		$full_path_to_files = str_replace($sub_path_to_php, $sub_path_to_files, $full_path_to_php);
 		$full_path_to_discussion_txt = $full_path_to_files . "/" . $file_with_discussion;
 		$full_path_to_info_gallery_ini = $full_path_to_files . "/" . $file_with_info_gallery;
-		
+				
 		$info_gallery_ini_content = parse_ini_file($full_path_to_info_gallery_ini);
 ?>
 
@@ -45,32 +47,58 @@
 	
 		<div class="container">
 			<div class="gallery">
-				<div class="image">
-					<a href="./album-1/album.php">
-					  <img src="./handler_photo.php?album_name=album-1&photo_name=indian-1.jpg&photo_type=thumb" title="American Indians 1" alt="American Indians 1">
-					</a>
-					<div class="desc">American Indians 1</div>
-				</div>
+				<?php
+					$directories = glob($full_path_to_files . '/*' , GLOB_ONLYDIR);
 				
-				<div class="image">
-					<a href="./album-2/album.php">
-					  <img src="./handler_photo.php?album_name=album-2&photo_name=indian-2.jpg&photo_type=thumb" title="American Indians 2" alt="American Indians 2">
-					</a>
-					<div class="desc">American Indians 2</div>
-				</div>
-				
-				<div class="image">
-					<a href="./album-3/album.php">
-					  <img src="./handler_photo.php?album_name=album-3&photo_name=indian-3.jpg&photo_type=thumb" title="American Indians 3" alt="American Indians 3">
-					</a>
-					<div class="desc">American Indians 3</div>
-				</div>
+					for ($i = 0; $i < count($directories); $i++) {
+						
+						$full_path_to_info_photos_csv = $directories[$i] . "/" . $file_with_info_photos;
+						$album_directory = basename($directories[$i]);
+						
+						$full_path_to_info_album_ini = $full_path_to_files . "/" . $album_directory . "/" . $file_with_info_album;
+						
+						// load general information about photoalbum
+						if (($handle = fopen($full_path_to_info_album_ini, "r")) !== FALSE) {
+							$info_album_ini_content = parse_ini_file($full_path_to_info_album_ini);
+							$album_name = $info_album_ini_content["album_name"];
+							$album_short_description = $info_album_ini_content["album_short_description"];
+						}
+						
+						// load information about first image in photoalbum which will be used as title image
+						if (($handle = fopen($full_path_to_info_photos_csv, "r")) !== FALSE) {
+							if (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
+								$photo_name = $data[0];
+								$photo_width = $data[1];
+								$photo_height = $data[2];
+								$thumb_width = $data[3];
+								$thumb_height = $data[4];
+								$photo_short_description = $data[5];
+								$photo_long_description = $data[6];
+							}
+							fclose($handle);
+						}
+				?>
+					<div class="image">
+						<a href="./<?php echo $album_directory; ?>/album.php">
+						  <img 
+								src="./handler_photo.php?album_directory=<?php echo $album_directory; ?>&photo_name=<?php echo $photo_name; ?>&photo_type=thumb" 
+								title="<?php echo $album_short_description; ?>" 
+								alt="<?php echo $album_name; ?>" 
+								width="<?php echo $thumb_width; ?>"
+								height="<?php echo $thumb_height; ?>"
+							/>
+						</a>
+						<div class="desc"><?php echo $album_name ?></div>
+					</div>
+				<?php
+					}
+				?>
 			</div>
-			
+
 			<!-- This <section> tag is part of discussion form in PHP -->
 			<section>
 			
-				<form action="./handler_discussion.php" method="post">
+				<form action="../handler_discussion.php?album_directory=<?php echo $album_directory ?>" method="post">
 					<table>
 						<tr>
 							<td>
@@ -100,38 +128,38 @@
 				
 				<?php
 					$myfile = fopen($full_path_to_discussion_txt, "r") or die("Unable to open file!");
-					echo "<table>";
+				?>
+					<table>
+				<?php
 					while(!feof($myfile)) {
 						$line = fgets($myfile);
 						if (!empty($line)) {
+							$parts = explode(";", $line);
 							
-							echo "<tr>";
+							$parts[0] = str_replace("\"", "", $parts[0]);
+							$parts[0] = clean_xss($parts[0]);
+					
+							$parts[1] = str_replace("\"", "", $parts[1]);
+							$parts[1] = clean_xss($parts[1]);
 							
-								$parts = explode(";", $line);
-								
-								echo "<td>";
-									$parts[1] = str_replace("\"", "", $parts[1]);
-									$parts[1] = clean_xss($parts[1]);
-									echo "<div class=\"commentary_name\">" . $parts[1] . "</div>";
-																								
-									$parts[0] = str_replace("\"", "", $parts[0]);
-									$parts[0] = clean_xss($parts[0]);
-									echo "<div class=\"commentary_time\">" . $parts[0] . "</div>";
-								echo "</td>";
-								
-								echo "<td>";
-									$parts[2] = str_replace("\"", "", $parts[2]);
-									$parts[2] = clean_xss($parts[2]);
-									echo "<div class=\"commentary_post\">" . $parts[2] . "</div>";
-								echo "</td>";
-
-							echo "</tr>";
+							$parts[2] = str_replace("\"", "", $parts[2]);
+							$parts[2] = clean_xss($parts[2]);
+				?>			
+							<tr>
+								<td>
+									<div class="commentary_name"><?php echo $parts[1] ?></div>
+									<div class="commentary_time"><?php echo $parts[0] ?></div>
+								</td>
+								<td>
+									<div class="commentary_post"><?php echo $parts[2] ?></div>
+								</td>
+							</tr>
+				<?php
 						}
 					}
-					echo "</table>";
-										
 					fclose($myfile);
 				?>
+					</table>
 			</section>
 		</div>
 		

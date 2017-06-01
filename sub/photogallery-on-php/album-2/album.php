@@ -13,7 +13,7 @@
 		// identify real path on server to the used files
 		$full_path_to_php = realpath(dirname(__FILE__));
 		$full_path_to_files = str_replace($sub_path_to_php, $sub_path_to_files, $full_path_to_php);
-		$album_folder = basename($full_path_to_files);
+		$album_directory = basename($full_path_to_files);
 		$full_path_to_discussion_txt = $full_path_to_files . "/" . $file_with_discussion;
 		$full_path_to_info_album_ini = $full_path_to_files . "/" . $file_with_info_album;
 		$full_path_to_info_photos_csv = $full_path_to_files . "/" . $file_with_info_photos;
@@ -62,7 +62,14 @@
 								$thumb_height = $data[4];
 								$alt = $data[5];
 								$description = $data[6];
-								print_figure($album_folder, $photo_name, $photo_width, $photo_height, $thumb_width, $thumb_height, $alt, $description);
+					?>
+						<figure itemprop="associatedMedia" itemscope itemtype="photoalbum">
+							<a href="../handler_photo.php?album_directory=<?php echo $album_directory; ?>&photo_name=<?php echo $photo_name; ?>&photo_type=photo" itemprop="contentUrl" data-size="<?php echo ($photo_width . "x" . $photo_height); ?>">
+								<img src="../handler_photo.php?album_directory=<?php echo $album_directory; ?>&photo_name=<?php echo $photo_name; ?>&photo_type=thumb" itemprop="thumbnail" alt="<?php echo $alt; ?>" title="<?php echo $description; ?>" width="<?php echo $thumb_width; ?>" height="<?php echo $thumb_height; ?>" />
+							</a>
+							<figcaption itemprop="caption description"><?php echo $description; ?></figcaption>
+						</figure>								
+					<?php			
 							}
 							fclose($handle);
 						}
@@ -73,7 +80,7 @@
 			<!-- This <section> tag is part of discussion form in PHP -->
 			<section>
 			
-				<form action="../handler_discussion.php?album_name=<?php echo $album_folder ?>" method="post">
+				<form action="../handler_discussion.php?album_directory=<?php echo $album_directory ?>" method="post">
 					<table>
 						<tr>
 							<td>
@@ -103,38 +110,38 @@
 				
 				<?php
 					$myfile = fopen($full_path_to_discussion_txt, "r") or die("Unable to open file!");
-					echo "<table>";
+				?>
+					<table>
+				<?php
 					while(!feof($myfile)) {
 						$line = fgets($myfile);
 						if (!empty($line)) {
+							$parts = explode(";", $line);
 							
-							echo "<tr>";
+							$parts[0] = str_replace("\"", "", $parts[0]);
+							$parts[0] = clean_xss($parts[0]);
+					
+							$parts[1] = str_replace("\"", "", $parts[1]);
+							$parts[1] = clean_xss($parts[1]);
 							
-								$parts = explode(";", $line);
-								
-								echo "<td>";
-									$parts[1] = str_replace("\"", "", $parts[1]);
-									$parts[1] = clean_xss($parts[1]);
-									echo "<div class=\"commentary_name\">" . $parts[1] . "</div>";
-																								
-									$parts[0] = str_replace("\"", "", $parts[0]);
-									$parts[0] = clean_xss($parts[0]);
-									echo "<div class=\"commentary_time\">" . $parts[0] . "</div>";
-								echo "</td>";
-								
-								echo "<td>";
-									$parts[2] = str_replace("\"", "", $parts[2]);
-									$parts[2] = clean_xss($parts[2]);
-									echo "<div class=\"commentary_post\">" . $parts[2] . "</div>";
-								echo "</td>";
-
-							echo "</tr>";
+							$parts[2] = str_replace("\"", "", $parts[2]);
+							$parts[2] = clean_xss($parts[2]);
+				?>			
+							<tr>
+								<td>
+									<div class="commentary_name"><?php echo $parts[1] ?></div>
+									<div class="commentary_time"><?php echo $parts[0] ?></div>
+								</td>
+								<td>
+									<div class="commentary_post"><?php echo $parts[2] ?></div>
+								</td>
+							</tr>
+				<?php
 						}
 					}
-					echo "</table>";
-										
 					fclose($myfile);
 				?>
+					</table>
 			</section>
 		</div>
 		
@@ -214,14 +221,5 @@
 <?php
 	} else {
 		header("Location: ./../unauthorized.php");
-	}
-
-	function print_figure($album_name, $photo_name, $photo_width, $photo_height, $thumb_width, $thumb_height, $alt, $description) {
-		echo "<figure itemprop=\"associatedMedia\" itemscope itemtype=\"photoalbum\">";
-		echo "<a href=\"../handler_photo.php?album_name=$album_name&photo_name=$photo_name&photo_type=photo\" itemprop=\"contentUrl\" data-size=\"" . $photo_width . "x" . $photo_height . "\">";
-		echo "<img src=\"../handler_photo.php?album_name=$album_name&photo_name=$photo_name&photo_type=thumb\" itemprop=\"thumbnail\" alt=\"$alt\" title=\"$description\" width=\"" . $thumb_width . "\" height=\"" . $thumb_height . "\" />";
-		echo "</a>";
-		echo "<figcaption itemprop=\"caption description\">$description</figcaption>";
-		echo "</figure>";
 	}
 ?>

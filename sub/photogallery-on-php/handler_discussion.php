@@ -17,8 +17,8 @@
 		if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			
 			// clean album name
-			$album_name = clean_xss($_GET["album_name"]);
-			$album_name = clean_basename($album_name);
+			$album_directory = clean_xss($_GET["album_directory"]);
+			$album_directory = clean_basename($album_directory);
 			
 			// clean name
 			$name = clean_xss($_POST["name"]);
@@ -29,10 +29,10 @@
 			$commentary = clean_csv($commentary);
 			$datetime = date('Y-m-d H:i:s');
 			
-			if ($album_name != "") {
-				$full_path_to_discussion_txt = $full_path_to_files . "/" . $album_name . "/" . $file_with_discussion;
+			if ($album_directory != "") {
+				$full_path_to_discussion_txt = $full_path_to_files . "/" . $album_directory . "/" . $file_with_discussion;
 				add_commentary_to_file($full_path_to_discussion_txt, $datetime, $name, $commentary);
-				header("Location: ./$album_name/album.php");
+				header("Location: ./$album_directory/album.php");
 			} else {
 				$full_path_to_discussion_txt = $full_path_to_files . "/" . $file_with_discussion;
 				add_commentary_to_file($full_path_to_discussion_txt, $datetime, $name, $commentary);

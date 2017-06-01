@@ -15,8 +15,8 @@
 			$full_path_to_files = str_replace($sub_path_to_php, $sub_path_to_files, $full_path_to_php);
 			
 			// clean album name
-			$album_name = clean_xss($_GET["album_name"]);
-			$album_name = clean_basename($album_name);
+			$album_directory = clean_xss($_GET["album_directory"]);
+			$album_directory = clean_basename($album_directory);
 			
 			// clean photo type
 			$photo_type = clean_xss($_GET["photo_type"]);
@@ -28,10 +28,10 @@
 			
 			if ($photo_type == "thumb" || $photo_type == "photo") {
 				
-				if ($album_name != "" && $photo_name != "") {
+				if ($album_directory != "" && $photo_name != "") {
 			
 					// identify real path on server to the photo
-					$full_path_to_photo = $full_path_to_files . "/" . $album_name . "/" . $photo_type . "/" . $photo_name;
+					$full_path_to_photo = $full_path_to_files . "/" . $album_directory . "/" . $photo_type . "/" . $photo_name;
 				
 					// get the file's mime type to send the correct content type header
 					$finfo = finfo_open(FILEINFO_MIME_TYPE);
