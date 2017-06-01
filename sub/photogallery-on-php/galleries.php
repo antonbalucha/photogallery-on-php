@@ -1,4 +1,6 @@
 <?php
+	require './utils.php';
+
 	session_start();
 	if (isset($_SESSION["is_logged_in"]) && $_SESSION["is_logged_in"] == "logged") {
 		
@@ -139,12 +141,5 @@
 <?php
 	} else {
 		header("Location: ./unauthorized.php");
-	}
-	
-	function clean_xss($data) {
-		$data = trim($data);
-		$data = stripslashes($data);
-		$data = htmlspecialchars($data);
-		return $data;
 	}
 ?>

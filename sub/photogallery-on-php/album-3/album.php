@@ -1,4 +1,6 @@
 <?php
+	require '../utils.php';
+
     session_start();
 	if (isset($_SESSION["is_logged_in"]) && $_SESSION["is_logged_in"] == "logged") {
 		
@@ -54,10 +56,13 @@
 						if (($handle = fopen($full_path_to_info_photos_csv, "r")) !== FALSE) {
 							while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
 								$photo_name = $data[0];
-								$photo_size = $data[1];
-								$alt = $data[2];
-								$description = $data[3];
-								print_figure($album_folder, $photo_name, $photo_size, $alt, $description);
+								$photo_width = $data[1];
+								$photo_height = $data[2];
+								$thumb_width = $data[3];
+								$thumb_height = $data[4];
+								$alt = $data[5];
+								$description = $data[6];
+								print_figure($album_folder, $photo_name, $photo_width, $photo_height, $thumb_width, $thumb_height, $alt, $description);
 							}
 							fclose($handle);
 						}
@@ -210,18 +215,11 @@
 	} else {
 		header("Location: ./../unauthorized.php");
 	}
-	
-	function clean_xss($data) {
-		$data = trim($data);
-		$data = stripslashes($data);
-		$data = htmlspecialchars($data);
-		return $data;
-	}
-	
-	function print_figure($album_name, $photo_name, $photo_size, $alt, $description) {
+
+	function print_figure($album_name, $photo_name, $photo_width, $photo_height, $thumb_width, $thumb_height, $alt, $description) {
 		echo "<figure itemprop=\"associatedMedia\" itemscope itemtype=\"photoalbum\">";
-		echo "<a href=\"../handler_photo.php?album_name=$album_name&photo_name=$photo_name&photo_type=photo\" itemprop=\"contentUrl\" data-size=\"$photo_size\">";
-		echo "<img src=\"../handler_photo.php?album_name=$album_name&photo_name=$photo_name&photo_type=thumb\" itemprop=\"thumbnail\" alt=\"$alt\" />";
+		echo "<a href=\"../handler_photo.php?album_name=$album_name&photo_name=$photo_name&photo_type=photo\" itemprop=\"contentUrl\" data-size=\"" . $photo_width . "x" . $photo_height . "\">";
+		echo "<img src=\"../handler_photo.php?album_name=$album_name&photo_name=$photo_name&photo_type=thumb\" itemprop=\"thumbnail\" alt=\"$alt\" title=\"$description\" width=\"" . $thumb_width . "\" height=\"" . $thumb_height . "\" />";
 		echo "</a>";
 		echo "<figcaption itemprop=\"caption description\">$description</figcaption>";
 		echo "</figure>";

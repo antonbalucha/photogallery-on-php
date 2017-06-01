@@ -1,16 +1,17 @@
 <?php
-
-	$sub_path_to_php = "/sub/";
-	$sub_path_to_files = "/files/";
-	$file_with_discussion = "discussion.txt";
-
-	// identify real path on server to the file with discussion
-	$full_path_to_php = realpath(dirname(__FILE__));
-	$full_path_to_files = str_replace($sub_path_to_php, $sub_path_to_files, $full_path_to_php);
+	require './utils.php';
 
 	session_start();
 	if (isset($_SESSION["is_logged_in"]) && $_SESSION["is_logged_in"] == "logged") {
 
+		$sub_path_to_php = "/sub/";
+		$sub_path_to_files = "/files/";
+		$file_with_discussion = "discussion.txt";
+
+		// identify real path on server to the file with discussion
+		$full_path_to_php = realpath(dirname(__FILE__));
+		$full_path_to_files = str_replace($sub_path_to_php, $sub_path_to_files, $full_path_to_php);
+	
 		$name = $commentary = $datetime = "";
 
 		if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -45,29 +46,7 @@
 	}
 	
 	function add_commentary_to_file($full_path_to_file, $datetime, $name, $commentary) {
-		$myfile = fopen($full_path_to_file, "a") or die("Unable to add commentary to discussion!");
-		$text = "\"".$datetime."\"; \"".$name."\"; \"".$commentary."\"\n";
-		fwrite($myfile, $text);
-		fclose($myfile);
-	}
-	
-	function clean_basename($data) {
-		$data = basename($data);
-		$data = str_replace("\.", "", $data);
-		$data = str_replace("\\", "", $data);
-		return $data;
-	}
-	
-	function clean_xss($data) {
-	  $data = trim($data);
-	  $data = stripslashes($data);
-	  $data = htmlspecialchars($data);
-	  return $data;
-	}
-	
-	function clean_csv($data) {
-		$data = str_replace("\"", "\\\"", $data);
-		$data = str_replace(";", "", $data);
-		return $data;
+		$text = "\"".$datetime."\"; \"".$name."\"; \"".$commentary."\"";
+		add_text_to_file($full_path_to_file, $text);
 	}
 ?>

@@ -1,4 +1,6 @@
 <?php
+	require './utils.php';
+
 	// show photo only if you are authorized
 	session_start();
 	if (isset($_SESSION["is_logged_in"]) && $_SESSION["is_logged_in"] == "logged") {
@@ -57,24 +59,4 @@
 		}
 	} else {
 		header("Location: ./../unauthorized.php");
-	}
-	
-	function clean_xss($data) {
-		$data = trim($data);
-		$data = stripslashes($data);
-		$data = htmlspecialchars($data);
-		return $data;
-	}
-	
-	function clean_basename($data) {
-		$data = basename($data);
-		$data = str_replace("\.", "", $data);
-		$data = str_replace("\\", "", $data);
-		return $data;
-	}
-	
-	function logger($text) {
-		$myfile = fopen("log.txt", "a") or die("Unable to open file!");
-		fwrite($myfile, ($text . "\n"));
-		fclose($myfile);
 	}?>
