@@ -29,15 +29,17 @@
 		<meta charset="UTF-8">
 		
 		<title><?php echo $info_gallery_ini_content["gallery_name"] ?></title>
+		<script src="https://code.jquery.com/jquery-1.7.2.js"></script>
+		<script src="../photogallery-on-php/discussion.js"></script>
 		
-		<link rel="stylesheet" href="../photoswipe/style-discussion.css"></link>
-		<link rel="stylesheet" href="../photoswipe/style-gallery.css"></link>
+		<link rel="stylesheet" href="../photogallery-on-php/style-discussion.css"></link>
+		<link rel="stylesheet" href="../photogallery-on-php/style-gallery.css"></link>
 	</head>
 	
 	<body>
 	
 		<div class="container">
-			<a href="../handler_logout.php" alt="Logout" title="Logout">Logout</a>
+			<a href="./handler_logout.php" alt="Logout" title="Logout">Logout</a>
 		</div>
 		
 		<div class="container">
@@ -97,39 +99,37 @@
 
 			<!-- This <section> tag is part of discussion form in PHP -->
 			<section>
-			
-				<form action="../handler_discussion.php" method="post">
-					<table>
-						<tr>
-							<td>
-								<label for="name">Your name</label>
-							</td>
-							<td>
-								<input type="text" id="name" name="name" size="64" maxlength="64" /><br/>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<label for="commentary">Commentary</label>
-							</td>
-							<td>
-								<textarea id="commentary" name="commentary" rows="5" size="512" maxlength="512"></textarea><br/>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								&nbsp;
-							</td>
-							<td>
-								<input type="submit" name="submit" value="Send" />
-							</td>
-					</table>					
-				</form>
+				<table>
+					<tr>
+						<td>
+							<label for="name">Your name</label>
+						</td>
+						<td>
+							<input type="text" id="name" name="name" size="64" maxlength="64" /><br/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="commentary">Commentary</label>
+						</td>
+						<td>
+							<textarea id="commentary" name="commentary" rows="5" size="512" maxlength="512"></textarea><br/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							&nbsp;
+						</td>
+						<td>
+							<button name="send" onclick="submit()" >Send</button>
+						</td>
+					</tr>
+				</table>
 				
 				<?php
 					$myfile = fopen($full_path_to_discussion_txt, "r") or die("Unable to open file!");
 				?>
-					<table>
+					<table id="list_of_comments">
 				<?php
 					while(!feof($myfile)) {
 						$line = fgets($myfile);
@@ -162,7 +162,6 @@
 					</table>
 			</section>
 		</div>
-		
 	</body>
 </html>
 
