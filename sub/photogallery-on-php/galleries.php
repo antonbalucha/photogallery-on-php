@@ -30,10 +30,10 @@
 		
 		<title><?php echo $info_gallery_ini_content["gallery_name"] ?></title>
 		<script src="https://code.jquery.com/jquery-1.7.2.js"></script>
-		<script src="../photogallery-on-php/discussion.js"></script>
+		<script src="./photogallery-on-php/discussion.js"></script>
 		
-		<link rel="stylesheet" href="../photogallery-on-php/style-discussion.css"></link>
-		<link rel="stylesheet" href="../photogallery-on-php/style-gallery.css"></link>
+		<link rel="stylesheet" href="./photogallery-on-php/style-discussion.css"></link>
+		<link rel="stylesheet" href="./photogallery-on-php/style-gallery.css"></link>
 	</head>
 	
 	<body>
@@ -81,7 +81,7 @@
 						}
 				?>
 					<div class="image">
-						<a href="./<?php echo $album_directory; ?>/album.php">
+						<a href="./album.php?album_directory=<?php echo $album_directory; ?>">
 						  <img 
 								src="./handler_photo.php?album_directory=<?php echo $album_directory; ?>&photo_name=<?php echo $photo_name; ?>&photo_type=thumb" 
 								title="<?php echo $album_short_description; ?>" 
@@ -121,7 +121,15 @@
 							&nbsp;
 						</td>
 						<td>
-							<button name="send" onclick="submit()" >Send</button>
+							<button name="send" onclick="submit('')" >Send</button>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							&nbsp;
+						</td>
+						<td id="error_message">
+							&nbsp;
 						</td>
 					</tr>
 				</table>

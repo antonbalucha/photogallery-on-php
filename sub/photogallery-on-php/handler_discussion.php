@@ -17,7 +17,7 @@
 		if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			
 			// clean album name
-			$album_directory = clean_xss($_GET["album_directory"]);
+			$album_directory = clean_xss($_POST["album_directory"]);
 			$album_directory = clean_basename($album_directory);
 			
 			// clean name
@@ -39,10 +39,10 @@
 			header("Content-Type: application/json");
 			echo "{\"datetime\": \"" . $datetime . "\" , \"name\": \"" . $name . "\" , \"commentary\": \"" . $commentary . "\"}";
 		} else {
-			header("Location: ./../unauthorized.php");
+			header("Location: ./unauthorized.php");
 		}
 	} else {
-		header("Location: ./../unauthorized.php");
+		header("Location: ./unauthorized.php");
 	}
 	
 	function add_commentary_to_file($full_path_to_file, $datetime, $name, $commentary) {

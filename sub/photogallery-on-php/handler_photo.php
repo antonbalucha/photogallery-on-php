@@ -46,17 +46,17 @@
 						$fp = fopen($full_path_to_photo, "rb");
 						fpassthru($fp);
 					} else {
-						header("Location: ./../unauthorized.php");
+						header("Location: ./unauthorized.php");
 					}
 				} else {
-					header("Location: ./../unauthorized.php");
+					header("Location: ./unauthorized.php");
 				}
 			} else {
-				header("Location: ./../unauthorized.php");
+				header("Location: ./unauthorized.php");
 			}
 		} else {
-			header("Location: ./../unauthorized.php");
+			header("Location: ./unauthorized.php");
 		}
 	} else {
-		header("Location: ./../unauthorized.php");
+		header("Location: ./unauthorized.php");
 	}?>

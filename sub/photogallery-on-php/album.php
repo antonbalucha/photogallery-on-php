@@ -1,5 +1,5 @@
 <?php
-	require '../utils.php';
+	require './utils.php';
 
     session_start();
 	if (isset($_SESSION["is_logged_in"]) && $_SESSION["is_logged_in"] == "logged") {
@@ -10,15 +10,22 @@
 		$file_with_info_album = "info_album.ini";
 		$file_with_info_photos = "info_photos.csv";
 
-		// identify real path on server to the used files
-		$full_path_to_php = realpath(dirname(__FILE__));
-		$full_path_to_files = str_replace($sub_path_to_php, $sub_path_to_files, $full_path_to_php);
-		$album_directory = basename($full_path_to_files);
-		$full_path_to_discussion_txt = $full_path_to_files . "/" . $file_with_discussion;
-		$full_path_to_info_album_ini = $full_path_to_files . "/" . $file_with_info_album;
-		$full_path_to_info_photos_csv = $full_path_to_files . "/" . $file_with_info_photos;
+		// clean album name
+		$album_directory = clean_xss($_GET["album_directory"]);
+		$album_directory = clean_basename($album_directory);
 		
-		$info_album_ini_content = parse_ini_file($full_path_to_info_album_ini);
+		if ($album_directory == "") {
+			header("Location: ./unauthorized.php");
+		} else {
+			// identify real path on server to the used files		
+			$full_path_to_php = realpath(dirname(__FILE__));
+			$full_path_to_files = str_replace($sub_path_to_php, $sub_path_to_files, $full_path_to_php);
+			
+			$full_path_to_discussion_txt = $full_path_to_files . "/" . $album_directory . "/" . $file_with_discussion;
+			$full_path_to_info_album_ini = $full_path_to_files . "/" . $album_directory . "/" . $file_with_info_album;
+			$full_path_to_info_photos_csv = $full_path_to_files . "/" . $album_directory . "/" . $file_with_info_photos;
+			
+			$info_album_ini_content = parse_ini_file($full_path_to_info_album_ini);	
 ?>
 
 <!DOCTYPE html>
@@ -30,20 +37,20 @@
 		<meta charset="UTF-8">
 		
 		<title><?php echo $info_album_ini_content["album_name"] ?></title>
-		<script src="../photogallery-on-php/discussion.js"></script>
+		<script src="./photogallery-on-php/discussion.js"></script>
 		
-		<link rel="stylesheet prefetch" href="../photoswipe/4.1.1/photoswipe.min.css"></link>
-		<link rel="stylesheet prefetch" href="../photoswipe/4.1.1/default-skin/default-skin.min.css"></link>
+		<link rel="stylesheet prefetch" href="./photoswipe/4.1.1/photoswipe.min.css"></link>
+		<link rel="stylesheet prefetch" href="./photoswipe/4.1.1/default-skin/default-skin.min.css"></link>
 		
-		<link rel="stylesheet" href="../photoswipe/style-photoswipe.css"></link>
-		<link rel="stylesheet" href="../photogallery-on-php/style-discussion.css"></link>
+		<link rel="stylesheet" href="./photoswipe/style-photoswipe.css"></link>
+		<link rel="stylesheet" href="./photogallery-on-php/style-discussion.css"></link>
 	</head>
 
 	<body>
 	
 		<div class="container">
-			<a href="../galleries.php" alt="Back" title="Back">Back</a>
-			<a href="../handler_logout.php" alt="Logout" title="Logout">Logout</a>
+			<a href="./galleries.php" alt="Back" title="Back">Back</a>
+			<a href="./handler_logout.php" alt="Logout" title="Logout">Logout</a>
 		</div>
 
 		<div class="container">
@@ -66,8 +73,8 @@
 								$description = $data[6];
 					?>
 						<figure itemprop="associatedMedia" itemscope itemtype="photoalbum">
-							<a href="../handler_photo.php?album_directory=<?php echo $album_directory; ?>&photo_name=<?php echo $photo_name; ?>&photo_type=photo" itemprop="contentUrl" data-size="<?php echo ($photo_width . "x" . $photo_height); ?>">
-								<img src="../handler_photo.php?album_directory=<?php echo $album_directory; ?>&photo_name=<?php echo $photo_name; ?>&photo_type=thumb" itemprop="thumbnail" alt="<?php echo $alt; ?>" title="<?php echo $description; ?>" width="<?php echo $thumb_width; ?>" height="<?php echo $thumb_height; ?>" />
+							<a href="./handler_photo.php?album_directory=<?php echo $album_directory; ?>&photo_name=<?php echo $photo_name; ?>&photo_type=photo" itemprop="contentUrl" data-size="<?php echo ($photo_width . "x" . $photo_height); ?>">
+								<img src="./handler_photo.php?album_directory=<?php echo $album_directory; ?>&photo_name=<?php echo $photo_name; ?>&photo_type=thumb" itemprop="thumbnail" alt="<?php echo $alt; ?>" title="<?php echo $description; ?>" width="<?php echo $thumb_width; ?>" height="<?php echo $thumb_height; ?>" />
 							</a>
 							<figcaption itemprop="caption description"><?php echo $description; ?></figcaption>
 						</figure>								
@@ -103,7 +110,15 @@
 							&nbsp;
 						</td>
 						<td>
-							<button name="send" onclick="submit()" >Send</button>
+							<button name="send" onclick="submit('<?php echo $album_directory ?>')" >Send</button>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							&nbsp;
+						</td>
+						<td id="error_message">
+							&nbsp;
 						</td>
 					</tr>
 				</table>
@@ -211,15 +226,16 @@
 
 		</div>
 		
-		<script src='../photoswipe/4.1.1/photoswipe.min.js'></script>
-		<script src='../photoswipe/4.1.1/photoswipe-ui-default.min.js'></script>
-		<script src="../photoswipe/index.js"></script>
+		<script src='./photoswipe/4.1.1/photoswipe.min.js'></script>
+		<script src='./photoswipe/4.1.1/photoswipe-ui-default.min.js'></script>
+		<script src="./photoswipe/index.js"></script>
 
 	</body>
 </html>
 
 <?php
+		}
 	} else {
-		header("Location: ./../unauthorized.php");
+		header("Location: ./unauthorized.php");
 	}
 ?>

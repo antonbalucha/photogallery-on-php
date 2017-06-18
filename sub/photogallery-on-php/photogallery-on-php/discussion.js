@@ -1,9 +1,9 @@
-function submit(event) {
+function submit(album_directory) {
 	// get values from form
 	var url = "./handler_discussion.php";
 	var name = document.getElementById("name").value;
 	var commentary = document.getElementById("commentary").value;
-	var params = "name=" + name + "&commentary=" + commentary;
+	var params = "name=" + name + "&commentary=" + commentary + "&album_directory=" + album_directory;
 	var request = new XMLHttpRequest();
 	request.open("POST", url, true);
 	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
