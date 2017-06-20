@@ -134,40 +134,39 @@
 					</tr>
 				</table>
 				
-				<?php
-					$myfile = fopen($full_path_to_discussion_txt, "r") or die("Unable to open file!");
-				?>
-					<table id="list_of_comments">
-				<?php
-					while(!feof($myfile)) {
-						$line = fgets($myfile);
-						if (!empty($line)) {
-							$parts = explode(";", $line);
-							
-							$parts[0] = str_replace("\"", "", $parts[0]);
-							$parts[0] = clean_xss($parts[0]);
-					
-							$parts[1] = str_replace("\"", "", $parts[1]);
-							$parts[1] = clean_xss($parts[1]);
-							
-							$parts[2] = str_replace("\"", "", $parts[2]);
-							$parts[2] = clean_xss($parts[2]);
-				?>			
-							<tr>
-								<td>
-									<div class="commentary_name"><?php echo $parts[1] ?></div>
-									<div class="commentary_time"><?php echo $parts[0] ?></div>
-								</td>
-								<td>
-									<div class="commentary_post"><?php echo $parts[2] ?></div>
-								</td>
-							</tr>
-				<?php
+				<table id="list_of_comments">
+					<?php
+						$file = file($full_path_to_discussion_txt);
+						$reversed_file = array_reverse($file);
+						
+						foreach ($reversed_file as $line) {
+							if (!empty($line)) {
+								$parts = explode(";", $line);
+								
+								$parts[0] = str_replace("\"", "", $parts[0]);
+								$parts[0] = clean_xss($parts[0]);
+						
+								$parts[1] = str_replace("\"", "", $parts[1]);
+								$parts[1] = clean_xss($parts[1]);
+								
+								$parts[2] = str_replace("\"", "", $parts[2]);
+								$parts[2] = clean_xss($parts[2]);
+					?>			
+								<tr>
+									<td>
+										<div class="commentary_name"><?php echo $parts[1] ?></div>
+										<div class="commentary_time"><?php echo $parts[0] ?></div>
+									</td>
+									<td>
+										<div class="commentary_post"><?php echo $parts[2] ?></div>
+									</td>
+								</tr>
+					<?php
+							}
 						}
-					}
-					fclose($myfile);
-				?>
-					</table>
+						fclose($file);
+					?>
+				</table>
 			</section>
 		</div>
 	</body>
