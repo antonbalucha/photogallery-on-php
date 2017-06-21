@@ -62,8 +62,8 @@
 			<section>
 				<div class="my-gallery" itemscope itemtype="photoalbum">
 					<?php					
-						if (($handle = fopen($full_path_to_info_photos_csv, "r")) !== FALSE) {
-							while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
+						if (($file_handler = fopen($full_path_to_info_photos_csv, "r")) !== FALSE) {
+							while (($data = fgetcsv($file_handler, 0, ";")) !== FALSE) {
 								$photo_name = $data[0];
 								$photo_width = $data[1];
 								$photo_height = $data[2];
@@ -80,7 +80,7 @@
 						</figure>								
 					<?php			
 							}
-							fclose($handle);
+							fclose($file_handler);
 						}
 					?>
 				</div>
@@ -229,6 +229,17 @@
 		<script src='./photoswipe/4.1.1/photoswipe-ui-default.min.js'></script>
 		<script src="./photoswipe/index.js"></script>
 
+		<?php
+			// Print Google Analytics script
+			$file_google_analytics = "google_analytics.txt";
+			$full_path_to_google_analytics = $full_path_to_files . "/" . $file_google_analytics;
+			
+			if (($file_handler = @fopen($full_path_to_google_analytics, "r")) !== FALSE) {
+				echo fread($file_handler, filesize($full_path_to_google_analytics));
+				fclose($file_handler);
+			}
+		?>
+		
 	</body>
 </html>
 

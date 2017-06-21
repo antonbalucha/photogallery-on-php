@@ -169,6 +169,18 @@
 				</table>
 			</section>
 		</div>
+		
+		<?php
+			// Print Google Analytics script
+			$file_google_analytics = "google_analytics.txt";
+			$full_path_to_google_analytics = $full_path_to_files . "/" . $file_google_analytics;
+			
+			if (($file_handler = @fopen($full_path_to_google_analytics, "r")) !== FALSE) {
+				echo fread($file_handler, filesize($full_path_to_google_analytics));
+				fclose($file_handler);
+			}
+		?>
+		
 	</body>
 </html>
 
